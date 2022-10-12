@@ -77,8 +77,10 @@ function M.setup()
     SpellCap = { sp = c.warning, undercurl = true }, -- Word that should start with a capital. |spell| Combined with the highlighting used otherwise.
     SpellLocal = { sp = c.info, undercurl = true }, -- Word that is recognized by the spellchecker as one that is used in another region. |spell| Combined with the highlighting used otherwise.
     SpellRare = { sp = c.hint, undercurl = true }, -- Word that is recognized by the spellchecker as one that is hardly ever used.  |spell| Combined with the highlighting used otherwise.
-    StatusLine = { fg = c.fg_sidebar, bg = c.bg_statusline }, -- status line of current window
-    StatusLineNC = { fg = c.fg_gutter, bg = c.bg_statusline }, -- status lines of not-current windows Note: if this is equal to "StatusLine" Vim will use "^^^" in the status line of the current window.
+    -- StatusLine = { fg = c.fg_sidebar, bg = c.bg_statusline }, -- status line of current window
+    -- StatusLineNC = { fg = c.fg_gutter, bg = c.bg_statusline }, -- status lines of not-current windows Note: if this is equal to "StatusLine" Vim will use "^^^" in the status line of the current window.
+    StatusLine = { fg = c.fg_sidebar, bg = c.bg }, -- status line of current window
+    StatusLineNC = { fg = c.fg_gutter, bg = c.bg }, -- status lines of not-current windows Note: if this is equal to "StatusLine" Vim will use "^^^" in the status line of the current window.
     TabLine = { bg = c.bg_statusline, fg = c.fg_gutter }, -- tab pages line, not active tab page label
     TabLineFill = { bg = c.black }, -- tab pages line, where there are no labels
     TabLineSel = { fg = c.black, bg = c.blue }, -- tab pages line, active tab page label
@@ -572,28 +574,28 @@ function M.setup()
     -- Notify
     --- Border
     NotifyERRORBorder = { fg = util.darken(c.error, 0.3), bg = options.transparent and c.none or c.bg },
-    NotifyWARNBorder  = { fg = util.darken(c.warning, 0.3), bg = options.transparent and c.none or c.bg },
-    NotifyINFOBorder  = { fg = util.darken(c.info, 0.3), bg = options.transparent and c.none or c.bg },
+    NotifyWARNBorder = { fg = util.darken(c.warning, 0.3), bg = options.transparent and c.none or c.bg },
+    NotifyINFOBorder = { fg = util.darken(c.info, 0.3), bg = options.transparent and c.none or c.bg },
     NotifyDEBUGBorder = { fg = util.darken(c.comment, 0.3), bg = options.transparent and c.none or c.bg },
     NotifyTRACEBorder = { fg = util.darken(c.purple, 0.3), bg = options.transparent and c.none or c.bg },
     --- Icons
-    NotifyERRORIcon   = { fg = c.error },
-    NotifyWARNIcon    = { fg = c.warning },
-    NotifyINFOIcon    = { fg = c.info },
-    NotifyDEBUGIcon   = { fg = c.comment },
-    NotifyTRACEIcon   = { fg = c.purple },
+    NotifyERRORIcon = { fg = c.error },
+    NotifyWARNIcon = { fg = c.warning },
+    NotifyINFOIcon = { fg = c.info },
+    NotifyDEBUGIcon = { fg = c.comment },
+    NotifyTRACEIcon = { fg = c.purple },
     --- Title
-    NotifyERRORTitle  = { fg = c.error },
-    NotifyWARNTitle   = { fg = c.warning },
-    NotifyINFOTitle   = { fg = c.info },
-    NotifyDEBUGTitle  = { fg = c.comment },
-    NotifyTRACETitle  = { fg = c.purple },
+    NotifyERRORTitle = { fg = c.error },
+    NotifyWARNTitle = { fg = c.warning },
+    NotifyINFOTitle = { fg = c.info },
+    NotifyDEBUGTitle = { fg = c.comment },
+    NotifyTRACETitle = { fg = c.purple },
     --- Body
-    NotifyERRORBody   = { fg = c.fg, bg = options.transparent and c.none or c.bg },
-    NotifyWARNBody    = { fg = c.fg, bg = options.transparent and c.none or c.bg },
-    NotifyINFOBody    = { fg = c.fg, bg = options.transparent and c.none or c.bg },
-    NotifyDEBUGBody   = { fg = c.fg, bg = options.transparent and c.none or c.bg },
-    NotifyTRACEBody   = { fg = c.fg, bg = options.transparent and c.none or c.bg },
+    NotifyERRORBody = { fg = c.fg, bg = options.transparent and c.none or c.bg },
+    NotifyWARNBody = { fg = c.fg, bg = options.transparent and c.none or c.bg },
+    NotifyINFOBody = { fg = c.fg, bg = options.transparent and c.none or c.bg },
+    NotifyDEBUGBody = { fg = c.fg, bg = options.transparent and c.none or c.bg },
+    NotifyTRACEBody = { fg = c.fg, bg = options.transparent and c.none or c.bg },
 
     -- Mini
     MiniCompletionActiveParameter = { underline = true },
