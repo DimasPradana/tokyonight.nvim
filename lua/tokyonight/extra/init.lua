@@ -25,6 +25,10 @@ function M.setup()
     tilix = "json",
     iterm = "itermcolors",
     lua = "lua",
+    sublime = "tmTheme",
+    delta = "gitconfig",
+    terminator = "conf",
+    prism = "js",
   }
   -- map of style to style name
   local styles = {
@@ -35,6 +39,7 @@ function M.setup()
   }
 
   for extra, ext in pairs(extras) do
+    package.loaded["tokyonight.extra." .. extra] = nil
     local plugin = require("tokyonight.extra." .. extra)
     for style, style_name in pairs(styles) do
       config.setup({ style = style })

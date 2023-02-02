@@ -65,7 +65,7 @@ function M.setup()
     Normal = { fg = c.fg, bg = options.transparent and c.none or c.bg }, -- normal text
     NormalNC = { fg = c.fg, bg = options.transparent and c.none or options.dim_inactive and c.bg_dark or c.bg }, -- normal text in non-current windows
     NormalSB = { fg = c.fg_sidebar, bg = c.bg_sidebar }, -- normal text in sidebar
-    NormalFloat = { fg = c.fg, bg = c.bg_float }, -- Normal text in floating windows.
+    NormalFloat = { fg = c.fg_float, bg = c.bg_float }, -- Normal text in floating windows.
     FloatBorder = { fg = c.border_highlight, bg = c.bg_float },
     Pmenu = { bg = c.bg_popup, fg = c.fg }, -- Popup menu: normal item.
     PmenuSel = { bg = util.darken(c.fg_gutter, 0.8) }, -- Popup menu: selected item.
@@ -75,6 +75,7 @@ function M.setup()
     QuickFixLine = { bg = c.bg_visual, bold = true }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
     Search = { bg = c.bg_search, fg = c.fg }, -- Last search pattern highlighting (see 'hlsearch').  Also used for similar items that need to stand out.
     IncSearch = { bg = c.orange, fg = c.black }, -- 'incsearch' highlighting; also used for the text replaced with ":s///c"
+    CurSearch = { link = "IncSearch" },
     SpecialKey = { fg = c.dark3 }, -- Unprintable characters: text displayed differently from what it really is.  But not 'listchars' whitespace. |hl-Whitespace|
     SpellBad = { sp = c.error, undercurl = true }, -- Word that is not recognized by the spellchecker. |spell| Combined with the highlighting used otherwise.
     SpellCap = { sp = c.warning, undercurl = true }, -- Word that should start with a capital. |spell| Combined with the highlighting used otherwise.
@@ -167,7 +168,11 @@ function M.setup()
     markdownLinkText = { fg = c.blue, underline = true },
 
     ["@punctuation.special.markdown"] = { fg = c.orange, bold = true },
+    ["@text.todo.unchecked"] = { fg = c.blue }, -- For brackets and parens.
+    ["@text.todo.checked"] = { fg = c.green1 }, -- For brackets and parens.
     ["@text.literal.markdown_inline"] = { bg = c.terminal_black, fg = c.blue },
+    ["@text.literal.markdown"] = { link = "Normal" },
+    ["helpCommand"] = { bg = c.terminal_black, fg = c.blue },
 
     debugPC = { bg = c.bg_sidebar }, -- used for highlighting the current line in terminal-debug
     debugBreakpoint = { bg = util.darken(c.info, 0.1), fg = c.info }, -- used for breakpoint colors in terminal-debug
@@ -194,7 +199,7 @@ function M.setup()
     DiagnosticUnderlineInfo = { undercurl = true, sp = c.info }, -- Used to underline "Information" diagnostics
     DiagnosticUnderlineHint = { undercurl = true, sp = c.hint }, -- Used to underline "Hint" diagnostics
 
-    LspSignatureActiveParameter = { fg = c.orange },
+    LspSignatureActiveParameter = { bg = util.darken(c.bg_visual, 0.4), bold = true },
     LspCodeLens = { fg = c.comment },
 
     LspInfoBorder = { fg = c.border_highlight, bg = c.bg_float },
@@ -214,55 +219,57 @@ function M.setup()
     -- TSCharacter         = { };    -- For characters.
     -- TSComment           = { };    -- For comment blocks.
     TSNote = { fg = c.bg, bg = c.info },
-    TSWarning = { fg = c.bg, bg = c.warning },
-    TSDanger = { fg = c.bg, bg = c.error },
-    TSConstructor = { fg = c.magenta }, -- For constructor calls and definitions: `= { }` in Lua, and Java constructors.
+    ["@text.warning"] = { fg = c.bg, bg = c.warning },
+    ["@text.danger"] = { fg = c.bg, bg = c.error },
+    ["@constructor"] = { fg = c.magenta }, -- For constructor calls and definitions: `= { }` in Lua, and Java constructors.
     -- TSConditional       = { };    -- For keywords related to conditionnals.
     -- TSConstant          = { };    -- For constants
     -- TSConstBuiltin      = { };    -- For constant that are built in the language: `nil` in Lua.
     -- TSConstMacro        = { };    -- For constants that are defined by macros: `NULL` in C.
     -- TSError             = { };    -- For syntax/parser errors.
     -- TSException         = { };    -- For exception related keywords.
-    TSField = { fg = c.green1 }, -- For fields.
+    ["@field"] = { fg = c.green1 }, -- For fields.
     -- TSFloat             = { };    -- For floats.
     -- TSFunction          = { };    -- For function (calls and definitions).
     -- TSFuncBuiltin       = { };    -- For builtin functions: `table.insert` in Lua.
     -- TSFuncMacro         = { };    -- For macro defined fuctions (calls and definitions): each `macro_rules` in Rust.
     -- TSInclude           = { };    -- For includes: `#include` in C, `use` or `extern crate` in Rust, or `require` in Lua.
-    TSKeyword = { fg = c.purple, style = options.styles.keywords }, -- For keywords that don't fall in previous categories.
-    TSKeywordFunction = { fg = c.magenta, style = options.styles.functions }, -- For keywords used to define a fuction.
-    TSLabel = { fg = c.blue }, -- For labels: `label:` in C and `:label:` in Lua.
+    ["@keyword"] = { fg = c.purple, style = options.styles.keywords }, -- For keywords that don't fall in previous categories.
+    ["@keyword.function"] = { fg = c.magenta, style = options.styles.functions }, -- For keywords used to define a fuction.
+    ["@label"] = { fg = c.blue }, -- For labels: `label:` in C and `:label:` in Lua.
     -- TSMethod            = { };    -- For method calls and definitions.
     -- TSNamespace         = { };    -- For identifiers referring to modules and namespaces.
     -- TSNone              = { };    -- TODO: docs
     -- TSNumber            = { };    -- For all numbers
-    TSOperator = { fg = c.blue5 }, -- For any operator: `+`, but also `->` and `*` in C.
-    TSParameter = { fg = c.yellow }, -- For parameters of a function.
+    ["@operator"] = { fg = c.blue5 }, -- For any operator: `+`, but also `->` and `*` in C.
+    ["@parameter"] = { fg = c.yellow }, -- For parameters of a function.
     -- TSParameterReference= { };    -- For references to parameters of a function.
-    TSProperty = { fg = c.green1 }, -- Same as `TSField`.
-    TSPunctDelimiter = { fg = c.blue5 }, -- For delimiters ie: `.`
-    TSPunctBracket = { fg = c.fg_dark }, -- For brackets and parens.
-    TSPunctSpecial = { fg = c.blue5 }, -- For special punctutation that does not fall in the catagories before.
+    ["@property"] = { fg = c.green1 }, -- Same as `TSField`.
+    ["@punctuation.delimiter"] = { fg = c.blue5 }, -- For delimiters ie: `.`
+    ["@punctuation.bracket"] = { fg = c.fg_dark }, -- For brackets and parens.
+    ["@punctuation.special"] = { fg = c.blue5 }, -- For special punctutation that does not fall in the catagories before.
     -- TSRepeat            = { };    -- For keywords related to loops.
     -- TSString            = { };    -- For strings.
-    TSStringRegex = { fg = c.blue6 }, -- For regexes.
-    TSStringEscape = { fg = c.magenta }, -- For escape characters within a string.
+    ["@string.regex"] = { fg = c.blue6 }, -- For regexes.
+    ["@string.escape"] = { fg = c.magenta }, -- For escape characters within a string.
     -- TSSymbol            = { };    -- For identifiers referring to symbols or atoms.
     -- TSType              = { };    -- For types.
     -- TSTypeBuiltin       = { };    -- For builtin types.
-    TSVariable = { style = options.styles.variables }, -- Any variable name that does not have another highlight.
-    TSVariableBuiltin = { fg = c.red }, -- Variable names that are defined by the languages, like `this` or `self`.
+    ["@variable"] = { style = options.styles.variables }, -- Any variable name that does not have another highlight.
+    ["@variable.builtin"] = { fg = c.red }, -- Variable names that are defined by the languages, like `this` or `self`.
 
     -- TSTag               = { };    -- Tags like html tag names.
     -- TSTagDelimiter      = { };    -- Tag delimiter like `<` `>` `/`
     -- TSText              = { };    -- For strings considered text in a markup language.
-    TSTextReference = { fg = c.teal },
+    ["@text.reference"] = { fg = c.teal },
     -- TSEmphasis          = { };    -- For text to be represented with emphasis.
     -- TSUnderline         = { };    -- For text to be represented with an underline.
     -- TSStrike            = { };    -- For strikethrough text.
     -- TSTitle             = { };    -- Text that is part of a title.
     -- TSLiteral           = { };    -- Literal text.
     -- TSURI               = { };    -- Any URI like a link or email.
+    ["@text.diff.add"] = { link = "DiffAdd" },
+    ["@text.diff.delete"] = { link = "DiffDelete" },
 
     -- Lua
     -- luaTSProperty = { fg = c.red }, -- Same as `TSField`.
@@ -356,7 +363,7 @@ function M.setup()
     NvimTreeIndentMarker = { fg = c.fg_gutter },
     NvimTreeImageFile = { fg = c.fg_sidebar },
     NvimTreeSymlink = { fg = c.blue },
-    NvimTreeFolderIcon = { bg = c.none, fg = c.yellow },
+    NvimTreeFolderIcon = { bg = c.none, fg = c.blue },
     -- NvimTreeFolderName= { fg = c.fg_float },
 
     NeoTreeNormal = { fg = c.fg_sidebar, bg = c.bg_sidebar },
@@ -381,11 +388,11 @@ function M.setup()
     DashboardFooter = { fg = c.yellow, italic = true },
 
     -- Alpha
-    AlphaShortcut = { fg = c.cyan },
+    AlphaShortcut = { fg = c.orange },
     AlphaHeader = { fg = c.blue },
     AlphaHeaderLabel = { fg = c.orange },
     AlphaFooter = { fg = c.yellow, italic = true },
-    AlphaButtons = { fg = c.magenta },
+    AlphaButtons = { fg = c.cyan },
 
     -- WhichKey
     WhichKey = { fg = c.cyan },
@@ -427,22 +434,48 @@ function M.setup()
 
     -- Barbar
     BufferCurrent = { bg = c.fg_gutter, fg = c.fg },
+    BufferCurrentERROR = { bg = c.fg_gutter, fg = c.error },
+    BufferCurrentHINT = { bg = c.fg_gutter, fg = c.hint },
+    -- BufferCurrentIcon = { bg = c.fg_gutter, fg = c.},
+    BufferCurrentINFO = { bg = c.fg_gutter, fg = c.info },
+    BufferCurrentWARN = { bg = c.fg_gutter, fg = c.warning },
     BufferCurrentIndex = { bg = c.fg_gutter, fg = c.info },
     BufferCurrentMod = { bg = c.fg_gutter, fg = c.warning },
     BufferCurrentSign = { bg = c.fg_gutter, fg = c.info },
     BufferCurrentTarget = { bg = c.fg_gutter, fg = c.red },
+    BufferAlternate = { bg = c.fg_gutter, fg = c.fg },
+    BufferAlternateERROR = { bg = c.fg_gutter, fg = c.error },
+    BufferAlternateHINT = { bg = c.fg_gutter, fg = c.hint },
+    -- BufferAlternateIcon = { bg = c.fg_gutter, fg = c. },
+    BufferAlternateIndex = { bg = c.fg_gutter, fg = c.info },
+    BufferAlternateINFO = { bg = c.fg_gutter, fg = c.info },
+    BufferAlternateMod = { bg = c.fg_gutter, fg = c.warning },
+    BufferAlternateSign = { bg = c.fg_gutter, fg = c.info },
+    BufferAlternateTarget = { bg = c.fg_gutter, fg = c.red },
+    BufferAlternateWARN = { bg = c.fg_gutter, fg = c.warning },
     BufferVisible = { bg = c.bg_statusline, fg = c.fg },
+    BufferVisibleERROR = { bg = c.bg_statusline, fg = c.error },
+    BufferVisibleHINT = { bg = c.bg_statusline, fg = c.hint },
+    -- BufferVisibleIcon = { bg = c.bg_statusline, fg = c. },
+    BufferVisibleINFO = { bg = c.bg_statusline, fg = c.info },
+    BufferVisibleWARN = { bg = c.bg_statusline, fg = c.warning },
     BufferVisibleIndex = { bg = c.bg_statusline, fg = c.info },
     BufferVisibleMod = { bg = c.bg_statusline, fg = c.warning },
     BufferVisibleSign = { bg = c.bg_statusline, fg = c.info },
     BufferVisibleTarget = { bg = c.bg_statusline, fg = c.red },
     BufferInactive = { bg = c.bg_statusline, fg = c.dark5 },
+    BufferInactiveERROR = { bg = c.bg_statusline, fg = util.darken(c.error, 0.7) },
+    BufferInactiveHINT = { bg = c.bg_statusline, fg = util.darken(c.hint, 0.7) },
+    -- BufferInactiveIcon = { bg = c.bg_statusline, fg = util.darken(c., 0.7) },
+    BufferInactiveINFO = { bg = c.bg_statusline, fg = util.darken(c.info, 0.7) },
+    BufferInactiveWARN = { bg = c.bg_statusline, fg = util.darken(c.warning, 0.7) },
     BufferInactiveIndex = { bg = c.bg_statusline, fg = c.dark5 },
     BufferInactiveMod = { bg = c.bg_statusline, fg = util.darken(c.warning, 0.7) },
     BufferInactiveSign = { bg = c.bg_statusline, fg = c.border_highlight },
     BufferInactiveTarget = { bg = c.bg_statusline, fg = c.red },
+    BufferOffset = { bg = c.bg_statusline, fg = c.dark5 },
+    BufferTabpageFill = { bg = c.bg_statusline, fg = c.dark5 },
     BufferTabpages = { bg = c.bg_statusline, fg = c.none },
-    BufferTabpage = { bg = c.bg_statusline, fg = c.border_highlight },
 
     -- Sneak
     Sneak = { fg = c.bg_highlight, bg = c.magenta },
@@ -485,8 +518,9 @@ function M.setup()
     CmpItemAbbrMatch = { fg = c.blue1, bg = c.none },
     CmpItemAbbrMatchFuzzy = { fg = c.blue1, bg = c.none },
 
-    CmpItemKindDefault = { fg = c.fg_dark, bg = c.none },
     CmpItemMenu = { fg = c.comment, bg = c.none },
+
+    CmpItemKindDefault = { fg = c.fg_dark, bg = c.none },
 
     CmpItemKindKeyword = { fg = c.cyan, bg = c.none },
 
@@ -546,8 +580,8 @@ function M.setup()
     NavicText = { fg = c.fg, bg = c.none },
     NavicSeparator = { fg = c.fg, bg = c.none },
 
-    IndentBlanklineChar = { fg = c.fg_gutter },
-    IndentBlanklineContextChar = { fg = c.purple },
+    IndentBlanklineChar = { fg = c.fg_gutter, nocombine = true },
+    IndentBlanklineContextChar = { fg = c.purple, nocombine = true },
 
     -- Scrollbar
     ScrollbarHandle = { fg = c.none, bg = c.bg_highlight },
@@ -573,6 +607,10 @@ function M.setup()
     -- Yanky
     YankyPut = { link = "IncSearch" },
     YankyYanked = { link = "IncSearch" },
+
+    -- Lazy
+    LazyProgressDone = { bold = true, fg = c.magenta2 },
+    LazyProgressTodo = { bold = true, fg = c.fg_gutter },
 
     -- Notify
     --- Border
@@ -650,6 +688,41 @@ function M.setup()
     MiniTestPass = { fg = c.green, bold = true },
 
     MiniTrailspace = { bg = c.red },
+
+    -- Noice
+
+    NoiceCompletionItemKindDefault = { fg = c.fg_dark, bg = c.none },
+
+    NoiceCompletionItemKindKeyword = { fg = c.cyan, bg = c.none },
+
+    NoiceCompletionItemKindVariable = { fg = c.magenta, bg = c.none },
+    NoiceCompletionItemKindConstant = { fg = c.magenta, bg = c.none },
+    NoiceCompletionItemKindReference = { fg = c.magenta, bg = c.none },
+    NoiceCompletionItemKindValue = { fg = c.magenta, bg = c.none },
+
+    NoiceCompletionItemKindFunction = { fg = c.blue, bg = c.none },
+    NoiceCompletionItemKindMethod = { fg = c.blue, bg = c.none },
+    NoiceCompletionItemKindConstructor = { fg = c.blue, bg = c.none },
+
+    NoiceCompletionItemKindClass = { fg = c.orange, bg = c.none },
+    NoiceCompletionItemKindInterface = { fg = c.orange, bg = c.none },
+    NoiceCompletionItemKindStruct = { fg = c.orange, bg = c.none },
+    NoiceCompletionItemKindEvent = { fg = c.orange, bg = c.none },
+    NoiceCompletionItemKindEnum = { fg = c.orange, bg = c.none },
+    NoiceCompletionItemKindUnit = { fg = c.orange, bg = c.none },
+
+    NoiceCompletionItemKindModule = { fg = c.yellow, bg = c.none },
+
+    NoiceCompletionItemKindProperty = { fg = c.green1, bg = c.none },
+    NoiceCompletionItemKindField = { fg = c.green1, bg = c.none },
+    NoiceCompletionItemKindTypeParameter = { fg = c.green1, bg = c.none },
+    NoiceCompletionItemKindEnumMember = { fg = c.green1, bg = c.none },
+    NoiceCompletionItemKindOperator = { fg = c.green1, bg = c.none },
+    NoiceCompletionItemKindSnippet = { fg = c.dark5, bg = c.none },
+
+    TreesitterContext = { bg = util.darken(c.fg_gutter, 0.8) },
+    Hlargs = { fg = c.yellow },
+    -- TreesitterContext = { bg = util.darken(c.bg_visual, 0.4) },
   }
 
   if not vim.diagnostic then
