@@ -71,17 +71,15 @@ end
 
 --- Delete the autocmds when the theme changes to something else
 function M.onColorScheme()
-  if vim.g.colors_name ~= "tokyonight" then
-    vim.cmd([[autocmd! TokyoNight]])
-    vim.cmd([[augroup! TokyoNight]])
-  end
+  vim.cmd([[autocmd! TokyoNight]])
+  vim.cmd([[augroup! TokyoNight]])
 end
 
 ---@param config Config
 function M.autocmds(config)
   vim.cmd([[augroup TokyoNight]])
   vim.cmd([[  autocmd!]])
-  vim.cmd([[  autocmd ColorScheme * lua require("tokyonight.util").onColorScheme()]])
+  vim.cmd([[  autocmd ColorSchemePre * lua require("tokyonight.util").onColorScheme()]])
 
   vim.cmd(
     [[  autocmd FileType ]]
@@ -101,9 +99,11 @@ end
 ---@param str string template string
 ---@param table table key value pairs to replace in the string
 function M.template(str, table)
-  return (str:gsub("($%b{})", function(w)
-    return table[w:sub(3, -2)] or w
-  end))
+  return (
+    str:gsub("($%b{})", function(w)
+      return vim.tbl_get(table, unpack(vim.split(w:sub(3, -2), ".", { plain = true }))) or w
+    end)
+  )
 end
 
 function M.syntax(syntax)
@@ -151,6 +151,7 @@ function M.invert_colors(colors)
   for key, value in pairs(colors) do
     colors[key] = M.invert_colors(value)
   end
+  return colors
 end
 
 ---@param hls Highlights
@@ -177,6 +178,14 @@ function M.load(theme)
 
   vim.o.termguicolors = true
   vim.g.colors_name = "tokyonight"
+
+  if ts.new_style() then
+    for group, colors in pairs(ts.defaults) do
+      if not theme.highlights[group] then
+        M.highlight(group, colors)
+      end
+    end
+  end
 
   M.syntax(theme.highlights)
 

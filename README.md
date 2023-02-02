@@ -46,6 +46,7 @@ extra themes for Kitty, Alacritty, iTerm and Fish.
 - [Indent Blankline](https://github.com/lukas-reineke/indent-blankline.nvim)
 - [Dashboard](https://github.com/glepnir/dashboard-nvim)
 - [BufferLine](https://github.com/akinsho/nvim-bufferline.lua)
+- [Barbecue](https://github.com/utilyre/barbecue.nvim)
 - [Lualine](https://github.com/hoob3rt/lualine.nvim)
 - [Lightline](https://github.com/itchyny/lightline.vim)
 - [Neogit](https://github.com/TimUntersberger/neogit)
@@ -93,6 +94,16 @@ colorscheme tokyonight-moon
 ```lua
 -- Lua
 vim.cmd[[colorscheme tokyonight]]
+```
+
+To enable the `tokyonight` theme for `Barbecue`:
+
+```lua
+require('barbecue').setup {
+  -- ... your barbecue config
+  theme = 'tokyonight',
+  -- ... your barbecue config
+}
 ```
 
 To enable the `TokyoNight` theme for `Lualine`, simply specify it in your
@@ -176,7 +187,7 @@ How the highlight groups are calculated:
 3. the **colors** are then used to generate the highlight groups
 4. `config.on_highlights(highlights, colors)` is ran, where you can overide the highlight groups
 
-Please refer to default values for `colors` and `highlights` for the [storm](extras/lua_tokyonight_storm.lua), [moon](extras/lua_tokyonight_moon.lua), [night](extras/lua_tokyonight_night.lua), [day](extras/lua_tokyonight_day.lua)
+Please refer to default values for `colors` and `highlights` for the [storm](extras/lua/tokyonight_storm.lua), [moon](extras/lua/tokyonight_moon.lua), [night](extras/lua/tokyonight_night.lua), [day](extras/lua/tokyonight_day.lua)
 
 Example for changing some settings and colors
 
